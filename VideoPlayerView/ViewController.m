@@ -7,21 +7,30 @@
 //
 
 #import "ViewController.h"
+#import "VideoPlayerView.h"
 
 @interface ViewController ()
+
+@property (strong, nonatomic) VideoPlayerView* rootView;
 
 @end
 
 @implementation ViewController
 
-- (void)viewDidLoad {
+#pragma mark - View hierarchy
+- (void)viewDidLoad
+{
     [super viewDidLoad];
-    // Do any additional setup after loading the view, typically from a nib.
+    [self.view addSubview:self.rootView];
 }
 
-- (void)didReceiveMemoryWarning {
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
+- (VideoPlayerView*)rootView
+{
+    if (!_rootView) {
+        _rootView = [VideoPlayerView new];
+    }
+
+    return _rootView;
 }
 
 @end

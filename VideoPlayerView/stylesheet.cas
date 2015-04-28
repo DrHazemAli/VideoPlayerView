@@ -1,0 +1,16 @@
+// VideoPlayerView
+$VideoPlayerView = 15.0
+
+UIButton.playOrPauseButton {
+    cas_marginLeft $VideoPlayerView
+    cas_marginBottom -15.0
+}
+
+UISlider.progressSlider {
+    cas_marginLeft 10
+    cas_marginRight -15
+}
+
+UIButton.zoomInOrOutButton {
+    cas_marginRight $VideoPlayerView
+}

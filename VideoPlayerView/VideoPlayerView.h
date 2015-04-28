@@ -10,4 +10,8 @@
 
 @interface VideoPlayerView : SHPAbstractView
 
+@property (strong, nonatomic) UIButton *playOrPauseButton;  // 播放或暂停按钮
+@property (strong, nonatomic) UISlider *progressSlider;     // 拖放进度条
+@property (strong, nonatomic) UIButton *zoomInOrOutButton;  // 放大或缩小按钮
+
 @end
