@@ -17,6 +17,7 @@
 		1A47F3831AEF87B30060469C /* VideoPlayerViewTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A47F3821AEF87B30060469C /* VideoPlayerViewTests.m */; };
 		1A47F38D1AEF897A0060469C /* stylesheet.cas in Resources */ = {isa = PBXBuildFile; fileRef = 1A47F38C1AEF897A0060469C /* stylesheet.cas */; };
 		1A47F3901AEF89EC0060469C /* VideoPlayerView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A47F38F1AEF89EC0060469C /* VideoPlayerView.m */; };
+		1A47F3951AF072A40060469C /* UIImage+ColorHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A47F3941AF072A40060469C /* UIImage+ColorHelper.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -46,6 +47,8 @@
 		1A47F38C1AEF897A0060469C /* stylesheet.cas */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = stylesheet.cas; sourceTree = "<group>"; };
 		1A47F38E1AEF89EC0060469C /* VideoPlayerView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VideoPlayerView.h; sourceTree = "<group>"; };
 		1A47F38F1AEF89EC0060469C /* VideoPlayerView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VideoPlayerView.m; sourceTree = "<group>"; };
+		1A47F3931AF072A40060469C /* UIImage+ColorHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+ColorHelper.h"; sourceTree = "<group>"; };
+		1A47F3941AF072A40060469C /* UIImage+ColorHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+ColorHelper.m"; sourceTree = "<group>"; };
 		7897F4D9A31B8313F38CE3B3 /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
 		B488F170A6CA96D95ADCD970 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		BC66F421E6F575932EFC6086 /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
@@ -104,6 +107,8 @@
 				1A47F3751AEF87B30060469C /* LaunchScreen.xib */,
 				1A47F3701AEF87B30060469C /* Main.storyboard */,
 				1A47F38C1AEF897A0060469C /* stylesheet.cas */,
+				1A47F3931AF072A40060469C /* UIImage+ColorHelper.h */,
+				1A47F3941AF072A40060469C /* UIImage+ColorHelper.m */,
 			);
 			path = VideoPlayerView;
 			sourceTree = "<group>";
@@ -289,6 +294,7 @@
 			files = (
 				1A47F36F1AEF87B30060469C /* ViewController.m in Sources */,
 				1A47F36C1AEF87B30060469C /* AppDelegate.m in Sources */,
+				1A47F3951AF072A40060469C /* UIImage+ColorHelper.m in Sources */,
 				1A47F3691AEF87B30060469C /* main.m in Sources */,
 				1A47F3901AEF89EC0060469C /* VideoPlayerView.m in Sources */,
 			);

@@ -27,7 +27,7 @@
 - (VideoPlayerView*)rootView
 {
     if (!_rootView) {
-        _rootView = [VideoPlayerView new];
+        _rootView = [[VideoPlayerView alloc] initWithVideosURL:@[@"http://192.168.0.11/data/test/test0.mp4", @"http://192.168.0.11//data/video/2015/rkb/2015rkb01.mp4", @"http://192.168.0.11/data/test/test0.mp4", @"http://192.168.0.11//data/video/2015/rkb/2015rkb02.mp4"]];
     }
 
     return _rootView;
