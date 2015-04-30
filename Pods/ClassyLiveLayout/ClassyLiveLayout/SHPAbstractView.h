@@ -3,8 +3,8 @@
 //  Copyright (c) 2014 SHAPE A/S. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
-#import <UIKit/UIKit.h>
+@import Foundation;
+@import UIKit;
 
 @interface SHPAbstractView : UIView
 

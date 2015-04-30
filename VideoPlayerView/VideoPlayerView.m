@@ -6,11 +6,12 @@
 //  Copyright (c) 2015 Sam Lau. All rights reserved.
 //
 
+@import AVFoundation;
+
 #import "VideoPlayerView.h"
 #import <Masonry/Masonry.h>
 #import <Classy/Classy.h>
 #import <ClassyLiveLayout/ClassyLiveLayout.h>
-#import <AVFoundation/AVFoundation.h>
 
 #define kMainColor [UIColor colorWithRed:253 / 255.0f green:92 / 255.0f blue:2 / 255.0f alpha:1.0f]
 
@@ -21,6 +22,7 @@
 @property (strong, nonatomic) AVPlayerLayer* playerLayer;
 @property (strong, nonatomic) NSMutableArray* playerItems; // This array for hold the every player items, or application will crash
 @property (strong, nonatomic) id queuePlayerTimerObserver;
+@property (assign, nonatomic) BOOL isZoomIn;
 
 @end
 
@@ -142,6 +144,8 @@
         _zoomInOrOutButton = [UIButton buttonWithType:UIButtonTypeCustom];
         _zoomInOrOutButton.cas_styleClass = @"zoomInOrOutButton";
         [_zoomInOrOutButton setImage:[UIImage imageNamed:@"fullscreen_button"] forState:UIControlStateNormal];
+        // respond to action
+        [_zoomInOrOutButton addTarget:self action:@selector(zoomInOrOutButtonDidTouched:) forControlEvents:UIControlEventTouchUpInside];
     }
 
     return _zoomInOrOutButton;
@@ -173,7 +177,7 @@
 - (void)defineLayout
 {
     // Root view layout
-    [self mas_updateConstraints:^(MASConstraintMaker* make) {
+    [self mas_makeConstraints:^(MASConstraintMaker* make) {
         // when superview is not nil
         if (self.superview) {
             make.top.equalTo(self.superview.mas_top).offset(20);
@@ -185,7 +189,7 @@
     }];
 
     // bottomView layout
-    [self.bottomView mas_updateConstraints:^(MASConstraintMaker* make) {
+    [self.bottomView mas_makeConstraints:^(MASConstraintMaker* make) {
         make.left.equalTo(self.mas_left);
         make.bottom.equalTo(self.mas_bottom);
         make.right.equalTo(self.mas_right);
@@ -193,14 +197,14 @@
     }];
 
     // playOrPauseButton layout
-    [self.playOrPauseButton mas_updateConstraints:^(MASConstraintMaker* make) {
+    [self.playOrPauseButton mas_makeConstraints:^(MASConstraintMaker* make) {
         make.left.equalTo(self.mas_left).offset(_playOrPauseButton.cas_marginLeft);
         make.bottom.equalTo(self.mas_bottom).offset(_playOrPauseButton.cas_marginBottom);
         make.size.equalTo(_playOrPauseButton);
     }];
 
     // progressSlider layout
-    [self.progressSlider mas_updateConstraints:^(MASConstraintMaker* make) {
+    [self.progressSlider mas_makeConstraints:^(MASConstraintMaker* make) {
         make.left.equalTo(_playOrPauseButton.mas_right).offset(_progressSlider.cas_marginLeft);
         make.right.equalTo(_zoomInOrOutButton.mas_left).offset(_progressSlider.cas_marginRight);
         make.centerY.equalTo(_playOrPauseButton.mas_centerY);
@@ -208,21 +212,56 @@
     }];
 
     // zoomInOrOutButton layout
-    [self.zoomInOrOutButton mas_updateConstraints:^(MASConstraintMaker* make) {
+    [self.zoomInOrOutButton mas_makeConstraints:^(MASConstraintMaker* make) {
         make.right.equalTo(self.mas_right).offset(-_zoomInOrOutButton.cas_marginRight);
         make.centerY.equalTo(_progressSlider.mas_centerY);
     }];
 
     // timeLabel layout
-    [self.timeLabel mas_updateConstraints:^(MASConstraintMaker* make) {
+    [self.timeLabel mas_makeConstraints:^(MASConstraintMaker* make) {
         make.top.equalTo(_progressSlider.mas_bottom);
         make.right.equalTo(_progressSlider.mas_right);
     }];
 
     // titleLabel layout
-    [self.titleLabel mas_updateConstraints:^(MASConstraintMaker* make) {
+    [self.titleLabel mas_makeConstraints:^(MASConstraintMaker* make) {
         make.top.equalTo(self.mas_top).offset(20);
         make.left.equalTo(_progressSlider.mas_left);
+    }];
+
+    // user press zoomInButton or not
+    if (self.isZoomIn) {
+        [self defineLandscapeLeftLayout];
+    }
+    else {
+        [self definePortraitLayout];
+    }
+}
+
+- (void)defineLandscapeLeftLayout
+{
+
+    [self mas_remakeConstraints:^(MASConstraintMaker* make) {
+        // when superview is not nil
+        if (self.superview) {
+            make.top.equalTo(self.superview.mas_top).offset(20);
+            make.left.equalTo(self.superview.mas_left);
+            make.right.equalTo(self.superview.mas_right);
+            make.bottom.equalTo(self.superview.mas_bottom);
+        }
+    }];
+}
+
+- (void)definePortraitLayout
+{
+    [self mas_remakeConstraints:^(MASConstraintMaker* make) {
+        // when superview is not nil
+        if (self.superview) {
+            make.top.equalTo(self.superview.mas_top).offset(20);
+            make.left.equalTo(self.superview.mas_left);
+            make.right.equalTo(self.superview.mas_right);
+            make.height.equalTo(@212);
+        }
     }];
 }
 
@@ -242,7 +281,7 @@
     }
 }
 
-- (void)addTimeObserverToUpdateUI:(AVPlayerItem *)playerItem
+- (void)addTimeObserverToUpdateUI:(AVPlayerItem*)playerItem
 {
     // setup queuePlayer timer observer
     __weak __typeof(self) weakSelf = self;
@@ -276,17 +315,38 @@
 {
     // first pause the video
     [self.queuePlayer pause];
-    NSLog(@"调整前时间: %f", CMTimeGetSeconds(self.queuePlayer.currentItem.currentTime));
+    //    NSLog(@"调整前时间: %f", CMTimeGetSeconds(self.queuePlayer.currentItem.currentTime));
     if (self.queuePlayerTimerObserver) {
         [self.queuePlayer removeTimeObserver:self.queuePlayerTimerObserver];
         self.queuePlayerTimerObserver = nil;
     }
     [self.queuePlayer seekToTime:CMTimeMakeWithSeconds(sender.value, self.queuePlayer.currentTime.timescale) completionHandler:^(BOOL finished) {
-        NSLog(@"调整后时间: %f", CMTimeGetSeconds(self.queuePlayer.currentItem.currentTime));
+//        NSLog(@"调整后时间: %f", CMTimeGetSeconds(self.queuePlayer.currentItem.currentTime));
         // after seek to time, play the video
         [self.queuePlayer play];
         // add time observer to update ui
         [self addTimeObserverToUpdateUI:self.queuePlayer.currentItem];
+    }];
+}
+
+- (void)zoomInOrOutButtonDidTouched:(UIButton*)sender
+{
+    self.isZoomIn = !self.isZoomIn;
+
+    if (self.isZoomIn) {
+        // change device orientation
+        [[UIDevice currentDevice] setValue:[NSNumber numberWithInteger:UIInterfaceOrientationLandscapeLeft] forKey:@"orientation"];
+    }
+    else {
+        // change device orientation
+        [[UIDevice currentDevice] setValue:[NSNumber numberWithInteger:UIInterfaceOrientationPortrait] forKey:@"orientation"];
+    }
+    // tell view to update constraint
+    [self setNeedsUpdateConstraints];
+    // animate the view
+    [self updateConstraintsIfNeeded];
+    [UIView animateWithDuration:0.5 animations:^{
+        [self layoutIfNeeded];
     }];
 }
 
