@@ -23,6 +23,8 @@
 @property (strong, nonatomic) NSMutableArray* playerItems; // This array for hold the every player items, or application will crash
 @property (strong, nonatomic) id queuePlayerTimerObserver;
 @property (assign, nonatomic) BOOL isZoomIn;
+// handle pan gesture
+@property (assign, nonatomic) CGPoint beginPoint;
 
 @end
 
@@ -86,13 +88,18 @@
 #pragma mark - Build view hierarchies
 - (void)addSubviews
 {
+    // setup root view background
     self.backgroundColor = [UIColor blackColor];
+    // add all the subviews
     [self addSubview:self.titleLabel];
     [self addSubview:self.bottomView];
     [self addSubview:self.playOrPauseButton];
     [self addSubview:self.progressSlider];
     [self addSubview:self.zoomInOrOutButton];
     [self addSubview:self.timeLabel];
+    // attach gesture recognizers
+    UIPanGestureRecognizer* panGestureRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(handlePanGestureRecognizer:)];
+    [self addGestureRecognizer:panGestureRecognizer];
 }
 
 - (UIView*)bottomView
@@ -346,6 +353,39 @@
     [UIView animateWithDuration:0.5 animations:^{
         [self layoutIfNeeded];
     }];
+}
+
+- (void)handlePanGestureRecognizer:(UIPanGestureRecognizer*)gesture
+{
+    CGPoint endPoint = CGPointZero;
+    CGFloat offset = CGRectGetHeight(self.frame) / 10.0;
+
+    switch (gesture.state) {
+    case UIGestureRecognizerStateBegan: {
+        _beginPoint = [gesture locationInView:self];
+    } break;
+
+    case UIGestureRecognizerStateChanged: {
+
+    } break;
+    case UIGestureRecognizerStateEnded: {
+        endPoint = [gesture locationInView:self];
+        // fast forward
+        if ([self isFastForwardWithBeginPoint:_beginPoint endPoint:endPoint offset:offset]) {
+            NSLog(@"fast forward");
+        }
+        // fast backward
+
+    } break;
+
+    default:
+        break;
+    }
+}
+
+- (BOOL)isFastForwardWithBeginPoint:(CGPoint)beginPoint endPoint:(CGPoint)endPoint offset:(CGFloat)offset
+{
+    return (endPoint.x - beginPoint.x) > offset && fabs(endPoint.y - beginPoint.y) <= offset;
 }
 
 #pragma mark - Release resources
