@@ -269,11 +269,7 @@
 - (void)observeValueForKeyPath:(NSString*)keyPath ofObject:(AVPlayerItem*)playerItem change:(NSDictionary*)change context:(void*)context
 {
     if ([keyPath isEqualToString:@"status"]) {
-        if (playerItem.status == AVPlayerItemStatusReadyToPlay) {
-            // remove last timer observer
-            if (_queuePlayerTimerObserver) {
-                [_queuePlayer removeTimeObserver:_queuePlayerTimerObserver];
-            }
+        if (playerItem.status == AVPlayerStatusReadyToPlay) {
             [self addTimeObserverToUpdateUI:playerItem];
         }
     }
@@ -283,6 +279,12 @@
 
 - (void)addTimeObserverToUpdateUI:(AVPlayerItem*)playerItem
 {
+    // remove last timer observer
+    if (_queuePlayerTimerObserver) {
+        [_queuePlayer removeTimeObserver:_queuePlayerTimerObserver];
+        _queuePlayerTimerObserver = nil;
+    }
+
     // setup queuePlayer timer observer
     __weak __typeof(self) weakSelf = self;
     _queuePlayerTimerObserver = [self.queuePlayer addPeriodicTimeObserverForInterval:CMTimeMake(1, 1) queue:NULL usingBlock:^(CMTime time) {
@@ -316,10 +318,6 @@
     // first pause the video
     [self.queuePlayer pause];
     //    NSLog(@"调整前时间: %f", CMTimeGetSeconds(self.queuePlayer.currentItem.currentTime));
-    if (self.queuePlayerTimerObserver) {
-        [self.queuePlayer removeTimeObserver:self.queuePlayerTimerObserver];
-        self.queuePlayerTimerObserver = nil;
-    }
     [self.queuePlayer seekToTime:CMTimeMakeWithSeconds(sender.value, self.queuePlayer.currentTime.timescale) completionHandler:^(BOOL finished) {
 //        NSLog(@"调整后时间: %f", CMTimeGetSeconds(self.queuePlayer.currentItem.currentTime));
         // after seek to time, play the video
