@@ -7,6 +7,7 @@
 //
 
 @import AVFoundation;
+@import MediaPlayer;
 
 #import "VideoPlayerView.h"
 #import <Masonry/Masonry.h>
@@ -387,9 +388,11 @@
         }
         else if ([self isVolumeUpWithBeginPoint:_beginPoint endPoint:endPoint offset:offset viewWidth:CGRectGetWidth(self.frame)]) { //volume up
             NSLog(@"volume up");
+            [MPMusicPlayerController applicationMusicPlayer].volume += 0.1;
         }
         else if ([self isVolumeDownWithBeginPoint:_beginPoint endPoint:endPoint offset:offset viewWidth:CGRectGetWidth(self.frame)]) { //volume down
             NSLog(@"volume down");
+            [MPMusicPlayerController applicationMusicPlayer].volume += 0.1;
         }
         else if ([self isBrightnessUpWithBeginPoint:_beginPoint endPoint:endPoint offset:offset viewWidth:CGRectGetWidth(self.frame)]) { // brightness up
             NSLog(@"brightness up");
