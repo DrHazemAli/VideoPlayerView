@@ -370,11 +370,13 @@
     } break;
     case UIGestureRecognizerStateEnded: {
         endPoint = [gesture locationInView:self];
-        // fast forward
-        if ([self isFastForwardWithBeginPoint:_beginPoint endPoint:endPoint offset:offset]) {
+
+        if ([self isFastForwardWithBeginPoint:_beginPoint endPoint:endPoint offset:offset]) { // fast forward
             NSLog(@"fast forward");
         }
-        // fast backward
+        else if ([self isFastBackwardWithBeginPoint:_beginPoint endPoint:endPoint offset:offset]) { // back forward
+            NSLog(@"fast backward");
+        }
 
     } break;
 
@@ -386,6 +388,11 @@
 - (BOOL)isFastForwardWithBeginPoint:(CGPoint)beginPoint endPoint:(CGPoint)endPoint offset:(CGFloat)offset
 {
     return (endPoint.x - beginPoint.x) > offset && fabs(endPoint.y - beginPoint.y) <= offset;
+}
+
+- (BOOL)isFastBackwardWithBeginPoint:(CGPoint)beginPoint endPoint:(CGPoint)endPoint offset:(CGFloat)offset
+{
+    return (beginPoint.x - endPoint.x) > offset && fabs(endPoint.y - beginPoint.y) <= offset;
 }
 
 #pragma mark - Release resources
