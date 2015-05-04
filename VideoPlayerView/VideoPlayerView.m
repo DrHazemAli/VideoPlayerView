@@ -374,10 +374,16 @@
         endPoint = [gesture locationInView:self];
 
         if ([self isFastForwardWithBeginPoint:_beginPoint endPoint:endPoint offset:offset]) { // fast forward
-            NSLog(@"fast forward");
+            CGFloat currentDuration = _queuePlayer.currentTime.value / _queuePlayer.currentTime.timescale;
+            CGFloat newTime = currentDuration + fabs(_beginPoint.x - endPoint.x) * 30 / CGRectGetWidth(self.frame);
+
+            [self seekToTime:CMTimeMake(newTime, 1)];
         }
         else if ([self isFastBackwardWithBeginPoint:_beginPoint endPoint:endPoint offset:offset]) { // back forward
-            NSLog(@"fast backward");
+            CGFloat currentDuration = _queuePlayer.currentTime.value / _queuePlayer.currentTime.timescale;
+            CGFloat newTime = currentDuration - fabs(_beginPoint.x - endPoint.x) * 30 / CGRectGetWidth(self.frame);
+            
+            [self seekToTime:CMTimeMake(newTime, 1)];
         }
         else if ([self isVolumeUpWithBeginPoint:_beginPoint endPoint:endPoint offset:offset viewWidth:CGRectGetWidth(self.frame)]) { //volume up
             NSLog(@"volume up");
