@@ -366,9 +366,6 @@
     } break;
 
     case UIGestureRecognizerStateChanged: {
-
-    } break;
-    case UIGestureRecognizerStateEnded: {
         endPoint = [gesture locationInView:self];
 
         if ([self isFastForwardWithBeginPoint:_beginPoint endPoint:endPoint offset:offset]) { // fast forward
@@ -377,6 +374,20 @@
         else if ([self isFastBackwardWithBeginPoint:_beginPoint endPoint:endPoint offset:offset]) { // back forward
             NSLog(@"fast backward");
         }
+        else if ([self isVolumeUpWithBeginPoint:_beginPoint endPoint:endPoint offset:offset viewWidth:CGRectGetWidth(self.frame)]) { //volume up
+            NSLog(@"volume up");
+        }
+        else if ([self isVolumeDownWithBeginPoint:_beginPoint endPoint:endPoint offset:offset viewWidth:CGRectGetWidth(self.frame)]) { //volume down
+            NSLog(@"volume down");
+        }
+        else if ([self isBrightnessUpWithBeginPoint:_beginPoint endPoint:endPoint offset:offset viewWidth:CGRectGetWidth(self.frame)]) {  // brightness up
+            NSLog(@"brightness up");
+        }
+        else if ([self isBrightnessDownWithBeginPoint:_beginPoint endPoint:endPoint offset:offset viewWidth:CGRectGetWidth(self.frame)]) { // brightness down
+            NSLog(@"brightness down");
+        }
+    } break;
+    case UIGestureRecognizerStateEnded: {
 
     } break;
 
@@ -385,6 +396,7 @@
     }
 }
 
+#pragma mark - Handle pan gesture helper methods
 - (BOOL)isFastForwardWithBeginPoint:(CGPoint)beginPoint endPoint:(CGPoint)endPoint offset:(CGFloat)offset
 {
     return (endPoint.x - beginPoint.x) > offset && fabs(endPoint.y - beginPoint.y) <= offset;
@@ -393,6 +405,26 @@
 - (BOOL)isFastBackwardWithBeginPoint:(CGPoint)beginPoint endPoint:(CGPoint)endPoint offset:(CGFloat)offset
 {
     return (beginPoint.x - endPoint.x) > offset && fabs(endPoint.y - beginPoint.y) <= offset;
+}
+
+- (BOOL)isVolumeUpWithBeginPoint:(CGPoint)beginPoint endPoint:(CGPoint)endPoint offset:(CGFloat)offset viewWidth:(CGFloat)viewWidth
+{
+    return (beginPoint.y - endPoint.y) > offset && fabs(endPoint.x - beginPoint.x) <= offset && endPoint.x >= viewWidth / 2.0;
+}
+
+- (BOOL)isVolumeDownWithBeginPoint:(CGPoint)beginPoint endPoint:(CGPoint)endPoint offset:(CGFloat)offset viewWidth:(CGFloat)viewWidth
+{
+    return (endPoint.y - beginPoint.y) > offset && fabs(endPoint.x - beginPoint.x) <= offset && endPoint.x >= viewWidth / 2.0;
+}
+
+- (BOOL)isBrightnessUpWithBeginPoint:(CGPoint)beginPoint endPoint:(CGPoint)endPoint offset:(CGFloat)offset viewWidth:(CGFloat)viewWidth
+{
+    return (beginPoint.y - endPoint.y) > offset && fabs(endPoint.x - beginPoint.x) <= offset && endPoint.x < viewWidth / 2.0;
+}
+
+- (BOOL)isBrightnessDownWithBeginPoint:(CGPoint)beginPoint endPoint:(CGPoint)endPoint offset:(CGFloat)offset viewWidth:(CGFloat)viewWidth
+{
+    return (endPoint.y - beginPoint.y) > offset && fabs(endPoint.x - beginPoint.x) <= offset && endPoint.x < viewWidth / 2.0;
 }
 
 #pragma mark - Release resources
