@@ -322,11 +322,16 @@
 
 - (void)progressSliderDidPulled:(UISlider*)sender
 {
+    [self seekToTime:CMTimeMakeWithSeconds(sender.value, self.queuePlayer.currentTime.timescale)];
+}
+
+- (void)seekToTime:(CMTime)time
+{
     // first pause the video
     [self.queuePlayer pause];
     //    NSLog(@"调整前时间: %f", CMTimeGetSeconds(self.queuePlayer.currentItem.currentTime));
-    [self.queuePlayer seekToTime:CMTimeMakeWithSeconds(sender.value, self.queuePlayer.currentTime.timescale) completionHandler:^(BOOL finished) {
-//        NSLog(@"调整后时间: %f", CMTimeGetSeconds(self.queuePlayer.currentItem.currentTime));
+    [self.queuePlayer seekToTime:time completionHandler:^(BOOL finished) {
+        //        NSLog(@"调整后时间: %f", CMTimeGetSeconds(self.queuePlayer.currentItem.currentTime));
         // after seek to time, play the video
         [self.queuePlayer play];
         // add time observer to update ui
@@ -380,7 +385,7 @@
         else if ([self isVolumeDownWithBeginPoint:_beginPoint endPoint:endPoint offset:offset viewWidth:CGRectGetWidth(self.frame)]) { //volume down
             NSLog(@"volume down");
         }
-        else if ([self isBrightnessUpWithBeginPoint:_beginPoint endPoint:endPoint offset:offset viewWidth:CGRectGetWidth(self.frame)]) {  // brightness up
+        else if ([self isBrightnessUpWithBeginPoint:_beginPoint endPoint:endPoint offset:offset viewWidth:CGRectGetWidth(self.frame)]) { // brightness up
             NSLog(@"brightness up");
         }
         else if ([self isBrightnessDownWithBeginPoint:_beginPoint endPoint:endPoint offset:offset viewWidth:CGRectGetWidth(self.frame)]) { // brightness down
