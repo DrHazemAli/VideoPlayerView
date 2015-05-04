@@ -383,22 +383,20 @@
         else if ([self isFastBackwardWithBeginPoint:_beginPoint endPoint:endPoint offset:offset]) { // back forward
             CGFloat currentDuration = _queuePlayer.currentTime.value / _queuePlayer.currentTime.timescale;
             CGFloat newTime = currentDuration - fabs(_beginPoint.x - endPoint.x) * 30 / CGRectGetWidth(self.frame);
-            
+
             [self seekToTime:CMTimeMake(newTime, 1)];
         }
         else if ([self isVolumeUpWithBeginPoint:_beginPoint endPoint:endPoint offset:offset viewWidth:CGRectGetWidth(self.frame)]) { //volume up
-            NSLog(@"volume up");
             [MPMusicPlayerController applicationMusicPlayer].volume += 0.1;
         }
         else if ([self isVolumeDownWithBeginPoint:_beginPoint endPoint:endPoint offset:offset viewWidth:CGRectGetWidth(self.frame)]) { //volume down
-            NSLog(@"volume down");
             [MPMusicPlayerController applicationMusicPlayer].volume += 0.1;
         }
         else if ([self isBrightnessUpWithBeginPoint:_beginPoint endPoint:endPoint offset:offset viewWidth:CGRectGetWidth(self.frame)]) { // brightness up
-            NSLog(@"brightness up");
+            [UIScreen mainScreen].brightness += 0.1;
         }
         else if ([self isBrightnessDownWithBeginPoint:_beginPoint endPoint:endPoint offset:offset viewWidth:CGRectGetWidth(self.frame)]) { // brightness down
-            NSLog(@"brightness down");
+            [UIScreen mainScreen].brightness -= 0.1;
         }
     } break;
     case UIGestureRecognizerStateEnded: {
