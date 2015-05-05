@@ -13,6 +13,7 @@
 #import <Masonry/Masonry.h>
 #import <Classy/Classy.h>
 #import <ClassyLiveLayout/ClassyLiveLayout.h>
+#import "UIImage+ColorHelper.h"
 
 #define kMainColor [UIColor colorWithRed:253 / 255.0f green:92 / 255.0f blue:2 / 255.0f alpha:1.0f]
 
@@ -95,12 +96,24 @@
     [self addSubview:self.titleLabel];
     [self addSubview:self.bottomView];
     [self addSubview:self.playOrPauseButton];
+    [self addSubview:self.bufferProgressView];
     [self addSubview:self.progressSlider];
     [self addSubview:self.zoomInOrOutButton];
     [self addSubview:self.timeLabel];
     // attach gesture recognizers
     UIPanGestureRecognizer* panGestureRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(handlePanGestureRecognizer:)];
     [self addGestureRecognizer:panGestureRecognizer];
+}
+
+- (UIProgressView*)bufferProgressView
+{
+    if (!_bufferProgressView) {
+        _bufferProgressView = [UIProgressView new];
+        _bufferProgressView.trackTintColor = [UIColor whiteColor];
+        _bufferProgressView.progressTintColor = [UIColor grayColor];
+    }
+
+    return _bufferProgressView;
 }
 
 - (UIView*)bottomView
@@ -139,6 +152,8 @@
 
         _progressSlider.cas_styleClass = @"progressSlider";
         [_progressSlider setThumbImage:[UIImage imageNamed:@"video_time"] forState:UIControlStateNormal];
+        _progressSlider.minimumTrackTintColor = kMainColor;
+        _progressSlider.maximumTrackTintColor = [UIColor clearColor];
         // respond to action
         [_progressSlider addTarget:self action:@selector(progressSliderDidPulled:) forControlEvents:UIControlEventValueChanged];
     }
@@ -215,7 +230,7 @@
     [self.progressSlider mas_makeConstraints:^(MASConstraintMaker* make) {
         make.left.equalTo(_playOrPauseButton.mas_right).offset(_progressSlider.cas_marginLeft);
         make.right.equalTo(_zoomInOrOutButton.mas_left).offset(_progressSlider.cas_marginRight);
-        make.centerY.equalTo(_playOrPauseButton.mas_centerY);
+        make.centerY.equalTo(_playOrPauseButton.mas_centerY).offset(-1);
 
     }];
 
@@ -235,6 +250,13 @@
     [self.titleLabel mas_makeConstraints:^(MASConstraintMaker* make) {
         make.top.equalTo(self.mas_top).offset(20);
         make.left.equalTo(_progressSlider.mas_left);
+    }];
+
+    // bufferProgressView layout
+    [self.bufferProgressView mas_makeConstraints:^(MASConstraintMaker* make){
+        make.left.equalTo(_playOrPauseButton.mas_right).offset(_progressSlider.cas_marginLeft);
+        make.right.equalTo(_zoomInOrOutButton.mas_left).offset(_progressSlider.cas_marginRight);
+        make.centerY.equalTo(_playOrPauseButton.mas_centerY);
     }];
 
     // user press zoomInButton or not
@@ -282,7 +304,17 @@
         }
     }
     else if ([keyPath isEqualToString:@"loadedTimeRanges"]) {
+        self.bufferProgressView.progress = [self loadedTimeRange:playerItem];
     }
+}
+
+- (CGFloat)loadedTimeRange:(AVPlayerItem *)playerItem
+{
+    CMTimeRange timeRange = [[[playerItem loadedTimeRanges] firstObject] CMTimeRangeValue];
+    CGFloat avaiableSeconds = CMTimeGetSeconds(timeRange.start) + CMTimeGetSeconds(timeRange.duration);
+    CGFloat durationSeconds = CMTimeGetSeconds(playerItem.duration);
+    
+    return avaiableSeconds / durationSeconds;
 }
 
 - (void)addTimeObserverToUpdateUI:(AVPlayerItem*)playerItem

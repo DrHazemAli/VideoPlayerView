@@ -19,6 +19,7 @@
 @property (strong, nonatomic) UIButton* zoomInOrOutButton; // 放大或缩小按钮
 @property (strong, nonatomic) UILabel* timeLabel; // 已播放时间和视频时长
 @property (strong, nonatomic) UILabel* titleLabel; // 视频标题
-@property (strong, nonatomic) UIView *bottomView;  // 底部视图，用作背景
+@property (strong, nonatomic) UIView* bottomView; // 底部视图，用作背景
+@property (strong, nonatomic) UIProgressView* bufferProgressView; // 缓冲条
 
 @end
